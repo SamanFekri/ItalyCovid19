@@ -84,4 +84,6 @@ fig.canvas.mpl_connect('pick_event', onpick)
 locs, labels = plt.xticks()
 plt.setp(labels, rotation=90, fontsize=8)
 
+plt.savefig('chart.png', bbox_inches='tight')
+
 plt.show()
