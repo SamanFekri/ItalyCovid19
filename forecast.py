@@ -80,7 +80,7 @@ dates_lbl = [d.strftime("%Y-%m-%d") for d in dates]
 ## change read me
 text = ''
 for i in range(predict_more_day):
-    text += dates_lbl[-(5 - i)] + '\t' + '| ' + str(predicted_data[-(5 - i)]) + '\n'
+    text += dates_lbl[-(predict_more_day - i)] + '\t' + '| ' + str(predicted_data[-(predict_more_day - i)]) + '\n'
 
 template = ''
 with open('README.tmpl.md', 'r', encoding='utf-8') as f:
@@ -88,6 +88,9 @@ with open('README.tmpl.md', 'r', encoding='utf-8') as f:
 
 template = template.replace('{{forecast}}', text)
 template = template.replace('{{peak_day}}', dates_lbl[int(peak)])
+template = template.replace('{{predict_more_day}}', str(predict_more_day))
+template = template.replace('{{until_now}}', str(until_now))
+template = template.replace('{{expected_case}}', str(expected_case))
 
 with open('README.md', 'w', encoding='utf-8') as f:
     f.write(template)

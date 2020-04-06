@@ -18,6 +18,11 @@ date        | new case
 2020-04-10	| 3080.0
 2020-04-11	| 2767.0
 
+
+### Total
+Cases Until now = 132539\
+Total expected cases = 161959.03142663187
+
 ## Growth in each region
 With this code you can draw new cases of covid-19 in Italy based on regions
 
