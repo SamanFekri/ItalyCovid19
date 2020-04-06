@@ -1,5 +1,13 @@
 # Italy Covid-19
 
+## Prediction
+
+In this case I fit an normal distribution to new cases.\
+I assume that 28th of march is peak day.
+
+![Forcast Italy Covid-19 Growth](forecast.png)
+
+## Growth in each region
 With this code you can draw new cases of covid-19 in Italy based on regions
 
 ![Italy Covid-19 Growth for each day](chart.png)
