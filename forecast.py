@@ -5,7 +5,6 @@ import json
 import matplotlib.pyplot as plt
 import datetime
 
-
 from scipy.stats import norm
 
 # api-endpoint
@@ -61,7 +60,6 @@ t = x_standard_normal_dist(len(data['nuovi_positivi']), peak)
 expected_case = float(until_now) / norm.cdf(t)
 print("Expected total:", expected_case)
 
-
 predict_more_day = 5
 total = len(data['nuovi_positivi']) + predict_more_day
 real_data = data['nuovi_positivi'].to_list()
@@ -74,13 +72,29 @@ for i in range(total):
     n = round(n)
     predicted_data.append(n)
 
-dates = [datetime.datetime.utcfromtimestamp(int(posix_time/1000000000)) for posix_time in data.index.values.tolist()]
+dates = [datetime.datetime.utcfromtimestamp(int(posix_time / 1000000000)) for posix_time in data.index.values.tolist()]
 for _ in range(predict_more_day):
     dates.append(dates[-1] + datetime.timedelta(days=1))
 dates_lbl = [d.strftime("%Y-%m-%d") for d in dates]
 
+## change read me
+text = ''
+for i in range(predict_more_day):
+    text += dates_lbl[-(5 - i)] + '\t' + '| ' + str(predicted_data[-(5 - i)]) + '\n'
+
+template = ''
+with open('README.tmpl.md', 'r', encoding='utf-8') as f:
+    template = f.read()
+
+template = template.replace('{{forecast}}', text)
+template = template.replace('{{peak_day}}', dates_lbl[int(peak)])
+
+with open('README.md', 'w', encoding='utf-8') as f:
+    f.write(template)
+
+
 y_pos = np.arange(total)
-plt.bar(dates_lbl, real_data,  align='center')
+plt.bar(dates_lbl, real_data, align='center')
 plt.plot(dates_lbl, predicted_data, 'r')
 
 locs, labels = plt.xticks(ticks=dates_lbl)

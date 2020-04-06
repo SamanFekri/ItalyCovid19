@@ -3,14 +3,26 @@
 ## Prediction
 
 In this case I fit an normal distribution to new cases.\
-I assume that 28th of march is peak day.
+I assume that peak day is 2020-03-28.
 
-![Forcast Italy Covid-19 Growth](forecast.png)
+<p align="center">
+    <img src="forecast.png" width="800">
+</p>
+
+date        | new case
+------------|----------
+2020-04-06	| 4372.0
+2020-04-07	| 4059.0
+2020-04-08	| 3737.0
+2020-04-09	| 3413.0
+2020-04-10	| 3091.0
 
 ## Growth in each region
 With this code you can draw new cases of covid-19 in Italy based on regions
 
-![Italy Covid-19 Growth for each day](chart.png)
+<p align="center">
+    <img src="chart.png" width="800">
+</p>
 
 We use data from [here](https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-regioni.json)
 
