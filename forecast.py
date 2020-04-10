@@ -51,7 +51,7 @@ def new_case_at_day(n, last_day_we_have, sum_new_case_we_have, peak_day):
 
 # I assume the day == peak_day is max so in standard normal its 0
 # I assume the day == 0 is -3 in standard normal
-peak = 33.0
+peak = 35.0
 
 until_now = data['nuovi_positivi'].sum()
 print("Until now:", until_now)
