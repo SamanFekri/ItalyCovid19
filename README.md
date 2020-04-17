@@ -2,7 +2,7 @@
 
 ## Prediction
 
-In this case I fit an normal distribution to new cases.\
+In this case I fit a semi-normal distribution to new cases.\
 I assume that peak day is 2020-03-30.
 
 <p align="center">
@@ -12,16 +12,16 @@ I assume that peak day is 2020-03-30.
 ### predicted 5 days
 date        | new case
 ------------|----------
-2020-04-17	| 1999.0
-2020-04-18	| 1751.0
-2020-04-19	| 1523.0
-2020-04-20	| 1315.0
-2020-04-21	| 1127.0
+2020-04-18	| 3462.0
+2020-04-19	| 3249.0
+2020-04-20	| 3040.0
+2020-04-21	| 2834.0
+2020-04-22	| 2634.0
 
 
 ### Total
-Cases Until now = 168933\
-Total expected cases = 179990.29340830274
+Cases Until now = 172426\
+Total expected cases = 272740.18247214507
 
 ## Growth in each region
 With this code you can draw new cases of covid-19 in Italy based on regions

@@ -42,8 +42,13 @@ def x_standard_normal_dist(day, peak_day):
 def new_case_at_day(n, last_day_we_have, sum_new_case_we_have, peak_day):
     cdf_n = norm.cdf(x_standard_normal_dist(n, peak_day))
     cdf_n_1 = norm.cdf(x_standard_normal_dist(n - 1, peak_day))
-    pdf_n = cdf_n - cdf_n_1
 
+    if n > peak_day:
+        d = peak_day + (n - peak_day) / (1.5 - 1 / (n - peak_day))
+        cdf_n = norm.cdf(x_standard_normal_dist(d, peak_day))
+        cdf_n_1 = norm.cdf(x_standard_normal_dist(d - 1, peak_day))
+
+    pdf_n = cdf_n - cdf_n_1
     ld = x_standard_normal_dist(last_day_we_have, peak_day)
 
     return (sum_new_case_we_have * pdf_n) / norm.cdf(ld)
@@ -57,7 +62,7 @@ until_now = data['nuovi_positivi'].sum()
 print("Until now:", until_now)
 
 t = x_standard_normal_dist(len(data['nuovi_positivi']), peak)
-expected_case = float(until_now) / norm.cdf(t)
+expected_case = 1.5 * float(until_now) / norm.cdf(t)
 print("Expected total:", expected_case)
 
 predict_more_day = 5
@@ -94,7 +99,6 @@ template = template.replace('{{expected_case}}', str(expected_case))
 
 with open('README.md', 'w', encoding='utf-8') as f:
     f.write(template)
-
 
 y_pos = np.arange(total)
 plt.bar(dates_lbl, real_data, align='center')
