@@ -38,13 +38,14 @@ def core():
         if isToday:
             italy['today']['positive'] += item['nuovi_positivi']
 
-            italy['total']['positive'] += item['totale_positivi']
             italy['total']['healed'] += item['dimessi_guariti']
             italy['total']['death'] += item['deceduti']
 
         if isYesterday:
             italy['today']['healed'] += item['dimessi_guariti']
             italy['today']['death'] += item['deceduti']
+
+        italy['total']['positive'] += item['nuovi_positivi']
 
     italy['today']['healed'] = italy['total']['healed'] - italy['today']['healed']
     italy['today']['death'] = italy['total']['death'] - italy['today']['death']
@@ -85,7 +86,8 @@ Powered by [Skings](tg://user?id=82768138)
     data = {
         "chat_id": "@coronaitaliafarsi",
         "text": text,
-        "parse_mode": "Markdown"
+        "parse_mode": "Markdown",
+        "disable_notification": True
     }
     requests.post("https://api.telegram.org/bot/sendMessage", data)
 
@@ -121,7 +123,8 @@ Powered by [Skings](tg://user?id=82768138)
     data = {
         "chat_id": "@coronaitaliafarsi",
         "text": text,
-        "parse_mode": "Markdown"
+        "parse_mode": "Markdown",
+        "disable_notification": True
     }
     requests.post("https://api.telegram.org/bot/sendMessage", data)
 
