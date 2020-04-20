@@ -55,26 +55,26 @@ def core():
     print("--------------")
 
     text = """
-    📈 امروز در استان لمباردیا :
-    ({date})
+📈 امروز در استان لمباردیا :
+({date})
     
-• فوت شدگان: {death}    
-    ({today_death:+})
+• فوت شدگان: {death}
+({today_death:+})
 
-    • بهبود یافتگان: {healed}
-    ({today_healed:+})
+• بهبود یافتگان: {healed}
+({today_healed:+})
 
-    مجموع کیسهای کرونا: {positive}
-    ({today_positive:+})
+• مجموع کیسهای کرونا: {positive}
+({today_positive:+})
 
-    #آمارروزانه
-    #آمار
-    🇮🇹 @coronaitaliafarsi
-    Powered by [Skings](tg://user?id=82768138)
-    """
+#آمارروزانه
+#آمار
+🇮🇹 @coronaitaliafarsi
+Powered by [Skings](tg://user?id=82768138)
+"""
 
     text = text.format(
-        date=datetime.today().date().strftime("%d/%m/%Y"),
+        date=datetime.today().utcnow().date().strftime("%d/%m/%Y"),
         death=lombardi['total']['death'], today_death=lombardi['today']['death'],
         healed=lombardi['total']['healed'], today_healed=lombardi['today']['healed'],
         positive=lombardi['total']['positive'], today_positive=lombardi['today']['positive']
@@ -87,29 +87,29 @@ def core():
         "text": text,
         "parse_mode": "Markdown"
     }
-    requests.post("https://api.telegram.org/bot<id>/sendMessage", data)
+    requests.post("https://api.telegram.org/bot/sendMessage", data)
 
     text = """
-    📢📢📢 دولت ایتالیا هر روز ساعت ۱۸ آخرین آمار مبتلایان رو اعلام میکنه:
+📢📢📢 دولت ایتالیا هر روز ساعت ۱۸ آخرین آمار مبتلایان رو اعلام میکنه:
 
-     📈 آخرین آمار {date}
+📈 آخرین آمار {date}
     
-    • فوت شدگان: {death}
-    ({today_death:+})
+• فوت شدگان: {death}
+({today_death:+})
     
-    • بهبود یافتگان: {healed}
-    ({today_healed:+})
+• بهبود یافتگان: {healed}
+({today_healed:+})
     
-    • مجموع کیسهای کرونا: {positive}
-    ({today_positive:+})
-    #آمارروزانه
-    #آمار
-    🇮🇹@coronaitaliafarsi
-    Powered by [Skings](tg://user?id=82768138)
+• مجموع کیسهای کرونا: {positive}
+({today_positive:+})
+#آمارروزانه
+#آمار
+🇮🇹@coronaitaliafarsi
+Powered by [Skings](tg://user?id=82768138)
 """
 
     text = text.format(
-        date=datetime.today().date().strftime("%d/%m/%Y"),
+        date=datetime.today().utcnow().date().strftime("%d/%m/%Y"),
         death=italy['total']['death'], today_death=italy['today']['death'],
         healed=italy['total']['healed'], today_healed=italy['today']['healed'],
         positive=italy['total']['positive'], today_positive=italy['today']['positive']
@@ -123,11 +123,12 @@ def core():
         "text": text,
         "parse_mode": "Markdown"
     }
-    requests.post("https://api.telegram.org/bot<id>/sendMessage", data)
+    requests.post("https://api.telegram.org/bot/sendMessage", data)
 
 while True:
-    x = datetime.today()
-    y = x.replace(day=x.day + 1, hour=18, minute=30, second=0, microsecond=0)
+    x = datetime.today().utcnow()
+    print(x)
+    y = x.replace(day=x.day + 1, hour=20, minute=30, second=0, microsecond=0)
     delta_t = y - x
 
     secs = delta_t.seconds + 1
