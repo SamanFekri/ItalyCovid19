@@ -2,11 +2,29 @@ import requests
 from datetime import datetime, timedelta
 from threading import Timer
 import time
+import json
+
+# config = {
+#     "first_publish": False,
+#     "src": "",
+#     "bot": {
+#         "url": "",
+#         "token": "",
+#         "silent": False,
+#         "channel_id": ""
+#     }
+# }
+with open('.env.json') as f:
+  config = json.load(f)
+
+print("Config loaded")
+print(config)
+config['bot']['url'] = config['bot']['url'].format(token=config['bot']['token'])
 
 
 def core():
     # api-endpoint
-    URL = "https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-regioni.json"
+    URL = config['src']
 
     # sending get request and saving the response as response object
     r = requests.get(url=URL)
@@ -84,12 +102,12 @@ Powered by [Skings](tg://user?id=82768138)
     print(text)
 
     data = {
-        "chat_id": "@coronaitaliafarsi",
+        "chat_id": config['bot']['channel_id'],
         "text": text,
         "parse_mode": "Markdown",
-        "disable_notification": True
+        "disable_notification": config['bot']['silent']
     }
-    requests.post("https://api.telegram.org/bot/sendMessage", data)
+    requests.post(config['bot']['url'], data)
 
     text = """
 📢📢📢 دولت ایتالیا هر روز ساعت ۱۸ آخرین آمار مبتلایان رو اعلام میکنه:
@@ -121,20 +139,30 @@ Powered by [Skings](tg://user?id=82768138)
     print("--------------")
 
     data = {
-        "chat_id": "@coronaitaliafarsi",
+        "chat_id": config['bot']['channel_id'],
         "text": text,
         "parse_mode": "Markdown",
-        "disable_notification": True
+        "disable_notification": config['bot']['silent']
     }
-    requests.post("https://api.telegram.org/bot/sendMessage", data)
+    requests.post(config['bot']['url'], data)
 
-while True:
-    x = datetime.today().utcnow()
-    print(x)
-    y = x.replace(day=x.day + 1, hour=20, minute=30, second=0, microsecond=0)
-    delta_t = y - x
 
-    secs = delta_t.seconds + 1
+try:
+    while True:
+        x = datetime.today().utcnow()
+        print(x)
+        if x.today().utcnow().hour < 20 or (x.today().utcnow().hour == 20 and x.today().utcnow().minute < 30):
+            y = x.replace(day=x.day, hour=20, minute=30, second=0, microsecond=0)
+        else:
+            y = x.replace(day=x.day + 1, hour=20, minute=30, second=0, microsecond=0)
+        delta_t = y - x
 
-    core()
-    time.sleep(secs)
+        secs = delta_t.seconds + 1
+
+        if config['publish_immediate']:
+            core()
+        else:
+            config['publish_immediate'] = True
+        time.sleep(secs)
+except KeyboardInterrupt:
+    print('Arrivederci')
