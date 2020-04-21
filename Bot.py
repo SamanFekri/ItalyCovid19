@@ -168,7 +168,7 @@ try:
     while True:
         x = datetime.today().utcnow()
         print(x)
-        if x.today().utcnow().hour < 16 or (x.today().utcnow().hour == 16 and x.today().utcnow().minute < 31):
+        if x.today().utcnow().hour < 16 or (x.today().utcnow().hour == 16 and x.today().utcnow().minute < 30):
             y = x.replace(day=x.day, hour=16, minute=30, second=0, microsecond=0)
         else:
             y = x.replace(day=x.day + 1, hour=16, minute=30, second=0, microsecond=0)
