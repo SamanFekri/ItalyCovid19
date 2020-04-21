@@ -15,7 +15,7 @@ import json
 #     }
 # }
 with open('.env.json') as f:
-  config = json.load(f)
+    config = json.load(f)
 
 print("Config loaded")
 print(config)
@@ -31,18 +31,19 @@ def core():
     res = r.json()
 
     lombardi = {
-        'total': {'positive': 0, 'death': 0, 'healed': 0},
-        'today': {'positive': 0, 'death': 0, 'healed': 0},
+        'total': {'positive': 0, 'death': 0, 'healed': 0, 'cur': 0},
+        'today': {'positive': 0, 'death': 0, 'healed': 0, 'cur': 0},
     }
     italy = {
-        'total': {'positive': 0, 'death': 0, 'healed': 0},
-        'today': {'positive': 0, 'death': 0, 'healed': 0},
+        'total': {'positive': 0, 'death': 0, 'healed': 0, 'cur': 0},
+        'today': {'positive': 0, 'death': 0, 'healed': 0, 'cur': 0},
     }
 
     for item in res:
-        isToday = datetime.strptime(item['data'], '%Y-%m-%dT%H:%M:%S').date() == datetime.today().date()
+        isToday = datetime.strptime(item['data'], '%Y-%m-%dT%H:%M:%S').date() == (
+                    datetime.today() - timedelta(days=0)).date()
         isYesterday = datetime.strptime(item['data'], '%Y-%m-%dT%H:%M:%S').date() == (
-                datetime.today() - timedelta(days=1)).date()
+                    datetime.today() - timedelta(days=1)).date()
         if item['codice_regione'] == 3:
             if isToday:
                 lombardi['today']['positive'] = item['nuovi_positivi']
@@ -65,8 +66,16 @@ def core():
 
         italy['total']['positive'] += item['nuovi_positivi']
 
+        print(item)
+
     italy['today']['healed'] = italy['total']['healed'] - italy['today']['healed']
     italy['today']['death'] = italy['total']['death'] - italy['today']['death']
+
+    italy['total']['cur'] = italy['total']['positive'] - italy['total']['death'] - italy['total']['healed']
+    italy['today']['cur'] = italy['today']['positive'] - italy['today']['death'] - italy['today']['healed']
+
+    lombardi['total']['cur'] = lombardi['total']['positive'] - lombardi['total']['death'] - lombardi['total']['healed']
+    lombardi['today']['cur'] = lombardi['today']['positive'] - lombardi['today']['death'] - lombardi['today']['healed']
     print("-------------- italy")
     print(italy)
     print("-------------- lombardia")
@@ -76,6 +85,9 @@ def core():
     text = """
 📈 امروز در استان لمباردیا :
 ({date})
+
+• بیماران کنونی: {current}
+({today_current:+})
     
 • فوت شدگان: {death}
 ({today_death:+})
@@ -94,6 +106,7 @@ Powered by [Skings](tg://user?id=82768138)
 
     text = text.format(
         date=datetime.today().utcnow().date().strftime("%d/%m/%Y"),
+        current=lombardi['total']['cur'], today_current=lombardi['today']['cur'],
         death=lombardi['total']['death'], today_death=lombardi['today']['death'],
         healed=lombardi['total']['healed'], today_healed=lombardi['today']['healed'],
         positive=lombardi['total']['positive'], today_positive=lombardi['today']['positive']
@@ -113,6 +126,9 @@ Powered by [Skings](tg://user?id=82768138)
 📢📢📢 دولت ایتالیا هر روز ساعت ۱۸ آخرین آمار مبتلایان رو اعلام میکنه:
 
 📈 آخرین آمار {date}
+
+• بیماران کنونی: {current}
+({today_current:+})
     
 • فوت شدگان: {death}
 ({today_death:+})
@@ -130,6 +146,7 @@ Powered by [Skings](tg://user?id=82768138)
 
     text = text.format(
         date=datetime.today().utcnow().date().strftime("%d/%m/%Y"),
+        current=italy['total']['cur'], today_current=italy['today']['cur'],
         death=italy['total']['death'], today_death=italy['today']['death'],
         healed=italy['total']['healed'], today_healed=italy['today']['healed'],
         positive=italy['total']['positive'], today_positive=italy['today']['positive']
