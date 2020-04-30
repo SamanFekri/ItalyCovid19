@@ -14,7 +14,7 @@ def core():
     today = datetime.today().date().strftime("%d/%m/%Y")
     cmd.run(f"echo Auto push run the command in '{today}'", check=True, shell=True)
 
-    cp = cmd.run("git pull", check=True, shell=True)
+    cp = cmd.run(f"git pull", check=True, shell=True)
 
     cp = cmd.run("python3 main.py", check=True, shell=True)
     cp = cmd.run("python3 forecast.py", check=True, shell=True)
@@ -22,8 +22,8 @@ def core():
     cp = cmd.run("git pull", check=True, shell=True)
     cp = cmd.run("git add .", check=True, shell=True)
     message = "Automatically Update of " + today
-    cp = cmd.run(f"git commit -m {message}" , check=True, shell=True)
-    cp = cmd.run("git push -u origin master" , check=True, shell=True)
+    cp = cmd.run(f"git commit -m '{message}'", check=True, shell=True)
+    cp = cmd.run("git push -u origin master", check=True, shell=True)
 
 try:
     while True:
