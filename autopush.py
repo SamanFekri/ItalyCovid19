@@ -44,7 +44,7 @@ def core():
         cmd.run("git push -u origin master", check=True, shell=True)
         cmd.run(f"echo push ends", check=True, shell=True)
         cmd.run(f"echo ", check=True, shell=True)
-        
+
     except cmd.CalledProcessError:
         cmd.run(f"echo nothing new", check=True, shell=True)
         cmd.run(f"echo ", check=True, shell=True)
