@@ -14,13 +14,27 @@ def core():
     today = datetime.today().date().strftime("%d/%m/%Y")
     cmd.run(f"echo Auto push run the command in '{today}'", check=True, shell=True)
 
-    cp = cmd.run(f"git pull", check=True, shell=True)
+    cmd.run(f"echo Pulling", check=True, shell=True)
+    cmd.run(f"git pull", check=True, shell=True)
+    cmd.run(f"echo Pulling finished", check=True, shell=True)
+    cmd.run(f"echo ", check=True, shell=True)
 
-    cp = cmd.run("python3 main.py", check=True, shell=True)
-    cp = cmd.run("python3 forecast.py", check=True, shell=True)
+    cmd.run(f"echo Run main", check=True, shell=True)
+    cmd.run("python3 main.py", check=True, shell=True)
+    cmd.run(f"echo main finished", check=True, shell=True)
+    cmd.run(f"echo ", check=True, shell=True)
 
-    cp = cmd.run("git pull", check=True, shell=True)
+    cmd.run(f"echo run forecast", check=True, shell=True)
+    cmd.run("python3 forecast.py", check=True, shell=True)
+    cmd.run(f"echo forecast finished", check=True, shell=True)
+    cmd.run(f"echo ", check=True, shell=True)
+
+    cmd.run(f"echo add", check=True, shell=True)
     cp = cmd.run("git add .", check=True, shell=True)
+    cmd.run(f"echo ", check=True, shell=True)
+    print(cp)
+
+
     message = "Automatically Update of " + today
     cp = cmd.run(f"git commit -m '{message}'", check=True, shell=True)
     cp = cmd.run("git push -u origin master", check=True, shell=True)
