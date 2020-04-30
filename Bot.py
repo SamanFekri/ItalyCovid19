@@ -1,6 +1,5 @@
 import requests
 from datetime import datetime, timedelta
-from threading import Timer
 import time
 import json
 

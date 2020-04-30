@@ -111,4 +111,4 @@ locs, labels = plt.yticks(np.arange(0, 6800, step=200))
 plt.setp(labels, fontsize=8)
 
 plt.savefig('forecast.png', bbox_inches='tight')
-plt.show()
+# plt.show()

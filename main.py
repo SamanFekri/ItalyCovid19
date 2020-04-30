@@ -86,4 +86,4 @@ plt.setp(labels, rotation=90, fontsize=8)
 
 plt.savefig('chart.png', bbox_inches='tight')
 
-plt.show()
+# plt.show()
