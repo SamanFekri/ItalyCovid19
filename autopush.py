@@ -34,10 +34,21 @@ def core():
     cmd.run(f"echo ", check=True, shell=True)
     print(cp)
 
+    try:
+        cmd.run(f"echo commit", check=True, shell=True)
+        message = "Automatically Update of " + today
+        cmd.run(f"git commit -m '{message}'", check=True, shell=True)
+        cmd.run(f"echo ", check=True, shell=True)
 
-    message = "Automatically Update of " + today
-    cp = cmd.run(f"git commit -m '{message}'", check=True, shell=True)
-    cp = cmd.run("git push -u origin master", check=True, shell=True)
+        cmd.run(f"echo push", check=True, shell=True)
+        cmd.run("git push -u origin master", check=True, shell=True)
+        cmd.run(f"echo push ends", check=True, shell=True)
+        cmd.run(f"echo ", check=True, shell=True)
+        
+    except cmd.CalledProcessError:
+        cmd.run(f"echo nothing new", check=True, shell=True)
+        cmd.run(f"echo ", check=True, shell=True)
+
 
 try:
     while True:
