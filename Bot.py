@@ -40,9 +40,9 @@ def core():
 
     for item in res:
         isToday = datetime.strptime(item['data'], '%Y-%m-%dT%H:%M:%S').date() == (
-                    datetime.today() - timedelta(days=0)).date()
+                datetime.today() - timedelta(days=0)).date()
         isYesterday = datetime.strptime(item['data'], '%Y-%m-%dT%H:%M:%S').date() == (
-                    datetime.today() - timedelta(days=1)).date()
+                datetime.today() - timedelta(days=1)).date()
         if item['codice_regione'] == 3:
             if isToday:
                 lombardi['today']['positive'] = item['nuovi_positivi']
@@ -170,15 +170,22 @@ try:
         if x.today().utcnow().hour < 16 or (x.today().utcnow().hour == 16 and x.today().utcnow().minute < 30):
             y = x.replace(day=x.day, hour=16, minute=30, second=0, microsecond=0)
         else:
-            y = x.replace(day=x.day + 1, hour=16, minute=30, second=0, microsecond=0)
-        delta_t = y - x
+            try:
+                y = x.replace(day=x.day + 1, hour=16, minute=30, second=0, microsecond=0)
+            except ValueError:
+                try:
+                    y = x.replace(day=1, month=x.month + 1, hour=16, minute=30, second=0, microsecond=0)
+                except ValueError:
+                    y = x.replace(day=1, month=1, year=x.year + 1, hour=16, minute=30, second=0, microsecond=0)
 
-        secs = delta_t.seconds + 1
+            delta_t = y - x
 
-        if config['publish_immediate']:
-            core()
-        else:
-            config['publish_immediate'] = True
-        time.sleep(secs)
+            secs = delta_t.seconds + 1
+
+            if config['publish_immediate']:
+                core()
+            else:
+                config['publish_immediate'] = True
+            time.sleep(secs)
 except KeyboardInterrupt:
     print('Arrivederci')

@@ -57,7 +57,14 @@ try:
         if x.today().utcnow().hour < 16 or (x.today().utcnow().hour == 16 and x.today().utcnow().minute < 30):
             y = x.replace(day=x.day, hour=16, minute=30, second=0, microsecond=0)
         else:
-            y = x.replace(day=x.day + 1, hour=16, minute=30, second=0, microsecond=0)
+            try:
+                y = x.replace(day=x.day + 1, hour=16, minute=30, second=0, microsecond=0)
+            except ValueError:
+                try:
+                    y = x.replace(day=1, month=x.month + 1, hour=16, minute=30, second=0, microsecond=0)
+                except ValueError:
+                    y = x.replace(day=1, month=1, year=x.year + 1, hour=16, minute=30, second=0, microsecond=0)
+
         delta_t = y - x
 
         secs = delta_t.seconds + 1
