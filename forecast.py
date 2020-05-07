@@ -63,6 +63,7 @@ print("Until now:", until_now)
 
 t = x_standard_normal_dist(len(data['nuovi_positivi']), peak)
 expected_case = 1.5 * float(until_now) / norm.cdf(t)
+expected_case = int(round(expected_case))
 print("Expected total:", expected_case)
 
 predict_more_day = 5
@@ -72,9 +73,19 @@ for i in range(predict_more_day):
     real_data.append(0)
 
 predicted_data = []
+moving_7_day_sum = 0
 for i in range(total):
     n = new_case_at_day(i, len(data['nuovi_positivi']), until_now, peak)
-    n = round(n)
+
+    if i < len(data['nuovi_positivi']):
+        moving_7_day_sum += real_data[i]
+    else:
+        moving_7_day_sum += real_data[len(data['nuovi_positivi']) - 1]
+    if i > 7:
+        moving_7_day_sum -= real_data[i - 7]
+    n = (5 * n + 2 * moving_7_day_sum / 7) / 7
+    n = int(round(n))
+
     predicted_data.append(n)
 
 dates = [datetime.datetime.utcfromtimestamp(int(posix_time / 1000000000)) for posix_time in data.index.values.tolist()]
