@@ -61,11 +61,16 @@ lines.append(l)
 
 for i in range(1, 21):
     region = df.query("codice_regione == {}".format(i))
+    if region.empty:
+        continue
+    if i == 3:
+        print(region)
     if i == 4:
         new = []
         for j in range(len(region)):
             if j % 2 == 0:
                 new.append(region['nuovi_positivi'].iloc[j] + region['nuovi_positivi'].iloc[j + 1])
+
         l, = ax.plot(date, new,
                      label=region['denominazione_regione'].iloc[0] + '\n&\n' + region['denominazione_regione'].iloc[1])
         lines.append(l)
