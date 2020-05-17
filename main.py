@@ -59,12 +59,10 @@ sum_all = df.groupby('data')['nuovi_positivi'].sum()
 l, = ax.plot(date, sum_all, label='total')
 lines.append(l)
 
-for i in range(1, 21):
+for i in range(1, 23):
     region = df.query("codice_regione == {}".format(i))
     if region.empty:
         continue
-    if i == 3:
-        print(region)
     if i == 4:
         new = []
         for j in range(len(region)):
