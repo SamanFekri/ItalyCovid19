@@ -28,14 +28,15 @@ def core():
     # sending get request and saving the response as response object
     r = requests.get(url=URL)
     res = r.json()
+    print(res)
 
     lombardi = {
-        'total': {'positive': 0, 'death': 0, 'healed': 0, 'cur': 0},
-        'today': {'positive': 0, 'death': 0, 'healed': 0, 'cur': 0},
+        'total': {'positive': 0, 'death': 0, 'healed': 0, 'cur': 0, 'hospitalization': 0, 'sever': 0},
+        'today': {'positive': 0, 'death': 0, 'healed': 0, 'cur': 0, 'hospitalization': 0, 'sever': 0},
     }
     italy = {
-        'total': {'positive': 0, 'death': 0, 'healed': 0, 'cur': 0},
-        'today': {'positive': 0, 'death': 0, 'healed': 0, 'cur': 0},
+        'total': {'positive': 0, 'death': 0, 'healed': 0, 'cur': 0, 'hospitalization': 0, 'sever': 0},
+        'today': {'positive': 0, 'death': 0, 'healed': 0, 'cur': 0, 'hospitalization': 0, 'sever': 0},
     }
 
     for item in res:
@@ -48,16 +49,23 @@ def core():
                 lombardi['today']['positive'] = item['nuovi_positivi']
                 lombardi['today']['healed'] = item['dimessi_guariti'] - lombardi['total']['healed']
                 lombardi['today']['death'] = item['deceduti'] - lombardi['total']['death']
+                lombardi['today']['hospitalization'] = item['totale_ospedalizzati']
+                lombardi['today']['sever'] = item['terapia_intensiva']
 
             lombardi['total']['positive'] += item['nuovi_positivi']
+            lombardi['total']['hospitalization'] += item['totale_ospedalizzati']
+            lombardi['total']['sever'] += item['terapia_intensiva']
             lombardi['total']['healed'] = item['dimessi_guariti']
             lombardi['total']['death'] = item['deceduti']
 
         if isToday:
             italy['today']['positive'] += item['nuovi_positivi']
+            italy['today']['hospitalization'] += item['ricoverati_con_sintomi']
+            italy['today']['sever'] += item['terapia_intensiva']
 
             italy['total']['healed'] += item['dimessi_guariti']
             italy['total']['death'] += item['deceduti']
+
 
         if isYesterday:
             italy['today']['healed'] += item['dimessi_guariti']
@@ -65,7 +73,7 @@ def core():
 
         italy['total']['positive'] += item['nuovi_positivi']
 
-        # print(item)
+        print(item)
 
     italy['today']['healed'] = italy['total']['healed'] - italy['today']['healed']
     italy['today']['death'] = italy['total']['death'] - italy['today']['death']
@@ -119,29 +127,24 @@ Powered by [Skings](tg://user?id=82768138)
         "parse_mode": "Markdown",
         "disable_notification": config['bot']['silent']
     }
-    requests.post(config['bot']['url'], data)
+    # requests.post(config['bot']['url'], data)
 
     text = """
-📢📢📢 دولت ایتالیا هر روز ساعت ۱۸ آخرین آمار مبتلایان رو اعلام میکنه:
+📈 آمار کووید۱۹ مربوط به امروز
+🗓   {date}
 
-📈 آخرین آمار {date}
+• مبتلایان جدید: {today_positive}
+• فوت شدگان جدید: {today_death}
+• بهبود یافتگان جدید: {today_healed}
 
-• بیماران کنونی: {current}
-({today_current:+})
-    
-• فوت شدگان: {death}
-({today_death:+})
-    
-• بهبود یافتگان: {healed}
-({today_healed:+})
-    
-• مجموع کیسهای کرونا: {positive}
-({today_positive:+})
-#آمارروزانه
-#آمار
+•مجموع بستری: {today_hospitalized}
+•مجموع بستری در مراقبتهای ویژه: {today_sever}
+
 🇮🇹@coronaitaliafarsi
-برای دیدنی پیش‌بینی ما با توجه به هفت روز گذشته به لینک زیر مراجعه کنید:
-[پیش‌بینی](https://github.com/SamanFekri/ItalyCovid19)
+
+پیش‌بینی ما برای چند روز آینده با توجه به روند آمار در ۷ روز گذشته:
+🔗 [Forecast](https://github.com/SamanFekri/ItalyCovid19)
+
 Powered by [Skings](tg://user?id=82768138)
 """
 
@@ -150,7 +153,8 @@ Powered by [Skings](tg://user?id=82768138)
         current=italy['total']['cur'], today_current=italy['today']['cur'],
         death=italy['total']['death'], today_death=italy['today']['death'],
         healed=italy['total']['healed'], today_healed=italy['today']['healed'],
-        positive=italy['total']['positive'], today_positive=italy['today']['positive']
+        positive=italy['total']['positive'], today_positive=italy['today']['positive'],
+        today_hospitalized=italy['today']['hospitalization'], today_sever=italy['today']['sever'],
     )
     print("--------------")
     print(text)
@@ -160,7 +164,8 @@ Powered by [Skings](tg://user?id=82768138)
         "chat_id": config['bot']['channel_id'],
         "text": text,
         "parse_mode": "Markdown",
-        "disable_notification": config['bot']['silent']
+        "disable_notification": config['bot']['silent'],
+        "disable_web_page_preview": True,
     }
     requests.post(config['bot']['url'], data)
 
@@ -180,14 +185,14 @@ try:
                 except ValueError:
                     y = x.replace(day=1, month=1, year=x.year + 1, hour=16, minute=30, second=0, microsecond=0)
 
-            delta_t = y - x
+        delta_t = y - x
 
-            secs = delta_t.seconds + 1
+        secs = delta_t.seconds + 1
 
-            if config['publish_immediate']:
-                core()
-            else:
-                config['publish_immediate'] = True
-            time.sleep(secs)
+        if config['publish_immediate']:
+            core()
+        else:
+            config['publish_immediate'] = True
+        time.sleep(secs)
 except KeyboardInterrupt:
     print('Arrivederci')
