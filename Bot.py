@@ -65,7 +65,7 @@ def core():
 
         italy['total']['positive'] += item['nuovi_positivi']
 
-        print(item)
+        # print(item)
 
     italy['today']['healed'] = italy['total']['healed'] - italy['today']['healed']
     italy['today']['death'] = italy['total']['death'] - italy['today']['death']
