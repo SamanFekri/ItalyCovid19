@@ -31,12 +31,12 @@ def core():
     print(res)
 
     lombardi = {
-        'total': {'positive': 0, 'death': 0, 'healed': 0, 'cur': 0, 'hospitalization': 0, 'sever': 0},
-        'today': {'positive': 0, 'death': 0, 'healed': 0, 'cur': 0, 'hospitalization': 0, 'sever': 0},
+        'total': {'positive': 0, 'death': 0, 'healed': 0, 'cur': 0, 'hospitalization': 0, 'severe': 0},
+        'today': {'positive': 0, 'death': 0, 'healed': 0, 'cur': 0, 'hospitalization': 0, 'severe': 0},
     }
     italy = {
-        'total': {'positive': 0, 'death': 0, 'healed': 0, 'cur': 0, 'hospitalization': 0, 'sever': 0},
-        'today': {'positive': 0, 'death': 0, 'healed': 0, 'cur': 0, 'hospitalization': 0, 'sever': 0},
+        'total': {'positive': 0, 'death': 0, 'healed': 0, 'cur': 0, 'hospitalization': 0, 'severe': 0},
+        'today': {'positive': 0, 'death': 0, 'healed': 0, 'cur': 0, 'hospitalization': 0, 'severe': 0},
     }
 
     for item in res:
@@ -49,27 +49,25 @@ def core():
                 lombardi['today']['positive'] = item['nuovi_positivi']
                 lombardi['today']['healed'] = item['dimessi_guariti'] - lombardi['total']['healed']
                 lombardi['today']['death'] = item['deceduti'] - lombardi['total']['death']
-                lombardi['today']['hospitalization'] = item['totale_ospedalizzati']
-                lombardi['today']['sever'] = item['terapia_intensiva']
 
             lombardi['total']['positive'] += item['nuovi_positivi']
-            lombardi['total']['hospitalization'] += item['totale_ospedalizzati']
-            lombardi['total']['sever'] += item['terapia_intensiva']
             lombardi['total']['healed'] = item['dimessi_guariti']
             lombardi['total']['death'] = item['deceduti']
 
         if isToday:
             italy['today']['positive'] += item['nuovi_positivi']
-            italy['today']['hospitalization'] += item['ricoverati_con_sintomi']
-            italy['today']['sever'] += item['terapia_intensiva']
 
             italy['total']['healed'] += item['dimessi_guariti']
             italy['total']['death'] += item['deceduti']
+            italy['total']['hospitalization'] += item['ricoverati_con_sintomi']
+            italy['total']['severe'] += item['terapia_intensiva']
 
 
         if isYesterday:
             italy['today']['healed'] += item['dimessi_guariti']
             italy['today']['death'] += item['deceduti']
+            italy['today']['hospitalization'] += item['ricoverati_con_sintomi']
+            italy['today']['severe'] += item['terapia_intensiva']
 
         italy['total']['positive'] += item['nuovi_positivi']
 
@@ -77,6 +75,8 @@ def core():
 
     italy['today']['healed'] = italy['total']['healed'] - italy['today']['healed']
     italy['today']['death'] = italy['total']['death'] - italy['today']['death']
+    italy['today']['hospitalization'] = italy['total']['hospitalization'] - italy['today']['hospitalization']
+    italy['today']['severe'] = italy['total']['severe'] - italy['today']['severe']
 
     italy['total']['cur'] = italy['total']['positive'] - italy['total']['death'] - italy['total']['healed']
     italy['today']['cur'] = italy['today']['positive'] - italy['today']['death'] - italy['today']['healed']
@@ -137,8 +137,9 @@ Powered by [Skings](tg://user?id=82768138)
 • فوت شدگان امروز: {today_death}
 • بهبود یافتگان امروز: {today_healed}
 
-•مجموع بستری: {today_hospitalized}
-•مجموع بستری در مراقبتهای ویژه: {today_sever}
+•مجموع بستری: ({today_hospitalized:+}) {hospitalized}
+
+•مجموع بستری در مراقبتهای ویژه: ({today_severe:+}) {severe}
 
 🇮🇹@coronaitaliafarsi
 
@@ -154,7 +155,8 @@ Powered by [Skings](tg://user?id=82768138)
         death=italy['total']['death'], today_death=italy['today']['death'],
         healed=italy['total']['healed'], today_healed=italy['today']['healed'],
         positive=italy['total']['positive'], today_positive=italy['today']['positive'],
-        today_hospitalized=italy['today']['hospitalization'], today_sever=italy['today']['sever'],
+        hospitalized= italy['total']['hospitalization'], today_hospitalized=italy['today']['hospitalization'],
+        severe= italy['total']['severe'], today_severe=italy['today']['severe'],
     )
     print("--------------")
     print(text)
