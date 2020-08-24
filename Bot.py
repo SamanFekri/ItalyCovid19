@@ -146,7 +146,7 @@ Powered by [Skings](tg://user?id=82768138)
 پیش‌بینی ما برای چند روز آینده با توجه به روند آمار در ۷ روز گذشته:
 🔗 [Forecast](https://github.com/SamanFekri/ItalyCovid19)
 
-Powered by [Skings](tg://user?id=82768138)
+This Bot Powered by [Skings](tg://user?id=82768138)
 """
 
     text = text.format(
