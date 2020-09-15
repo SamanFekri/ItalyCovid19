@@ -86,16 +86,20 @@ for i in range(total):
             else:
                 trend_direction = max(trend_direction - 1, -3)
     else:
-        moving_7_day_sum += (1 + trend_direction * 0.1) * real_data[len(data['nuovi_positivi']) - 1]
+        moving_7_day_sum += (1 + trend_direction * 0.1) * real_data[i - 7]
+    print(moving_7_day_sum)
     if i > 7:
         moving_7_day_sum -= real_data[i - 7]
+    print(moving_7_day_sum)
 
-    se = (moving_7_day_sum / 7)/ (n + 0.1)
+    se = (moving_7_day_sum / 7) / (n + 0.1)
     if se < 2:
         n = (5 * n + 2 * moving_7_day_sum / 7) / 7
     else:
-        n = (1 + trend_direction * 0.1) * moving_7_day_sum / 7
-
+        if i > 7:
+            n = (1 + trend_direction * 0.1) * (moving_7_day_sum / 7 + real_data[i - 7]) / 2
+        else:
+            n = (1 + trend_direction * 0.1) * moving_7_day_sum / 7
     n = int(round(n))
 
     predicted_data.append(n)
