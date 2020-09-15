@@ -87,10 +87,10 @@ for i in range(total):
                 trend_direction = max(trend_direction - 1, -3)
     else:
         moving_7_day_sum += (1 + trend_direction * 0.1) * real_data[i - 7]
-    print(moving_7_day_sum)
+
     if i > 7:
         moving_7_day_sum -= real_data[i - 7]
-    print(moving_7_day_sum)
+
 
     se = (moving_7_day_sum / 7) / (n + 0.1)
     if se < 2:
