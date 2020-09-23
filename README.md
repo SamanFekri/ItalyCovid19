@@ -12,16 +12,16 @@ I assume that peak day is 2020-03-30.
 ### predicted 5 days
 date        | new case
 ------------|----------
-2020-09-23	| 1685
-2020-09-24	| 1770
-2020-09-25	| 1962
-2020-09-26	| 1827
-2020-09-27	| 1812
+2020-09-24	| 1948
+2020-09-25	| 2174
+2020-09-26	| 2041
+2020-09-27	| 2038
+2020-09-28	| 1919
 
 
 ### Total
-Cases Until now = 300960\
-Total expected cases = 451440
+Cases Until now = 302600\
+Total expected cases = 453900
 
 ## Growth in each region
 With this code you can draw new cases of covid-19 in Italy based on regions
