@@ -77,6 +77,7 @@ moving_7_day_sum = 0
 trend_direction = 0
 for i in range(total):
     n = new_case_at_day(i, len(data['nuovi_positivi']), until_now, peak)
+    sample_from_n_days_ago = 5
 
     if i < len(data['nuovi_positivi']):
         moving_7_day_sum += real_data[i]
@@ -86,18 +87,17 @@ for i in range(total):
             else:
                 trend_direction = max(trend_direction - 1, -3)
     else:
-        moving_7_day_sum += (1 + trend_direction * 0.1) * real_data[i - 7]
+        moving_7_day_sum += (1 + trend_direction * 0.1) * real_data[i - sample_from_n_days_ago]
 
     if i > 7:
         moving_7_day_sum -= real_data[i - 7]
-
 
     se = (moving_7_day_sum / 7) / (n + 0.1)
     if se < 2:
         n = (5 * n + 2 * moving_7_day_sum / 7) / 7
     else:
         if i > 7:
-            n = (1 + trend_direction * 0.1) * (moving_7_day_sum / 7 + real_data[i - 7]) / 2
+            n = (1 + trend_direction * 0.1) * (8 *(moving_7_day_sum / 7) + 2 * real_data[i - sample_from_n_days_ago]) / 10.0
         else:
             n = (1 + trend_direction * 0.1) * moving_7_day_sum / 7
     n = int(round(n))
@@ -131,11 +131,12 @@ y_pos = np.arange(total)
 plt.bar(dates_lbl, real_data, align='center')
 plt.plot(dates_lbl, predicted_data, 'r')
 
-locs, labels = plt.xticks(ticks=dates_lbl)
+lbls = [x for x in range(0, len(dates_lbl), 5)]
+locs, labels = plt.xticks(ticks=lbls)
 plt.setp(labels, rotation=90, fontsize=8)
 
-locs, labels = plt.yticks(np.arange(0, 6800, step=200))
-plt.setp(labels, fontsize=8)
+# locs, labels = plt.yticks(np.arange(0, 6800, step=200))
+# plt.setp(labels, fontsize=8)
 
 plt.savefig('forecast.png', bbox_inches='tight')
 # plt.show()
