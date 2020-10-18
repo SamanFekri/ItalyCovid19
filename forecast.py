@@ -83,9 +83,9 @@ for i in range(total):
         moving_7_day_sum += real_data[i]
         if i > 0:
             if real_data[i] > real_data[i - 1]:
-                trend_direction = min(trend_direction + 1, 3)
+                trend_direction = min(trend_direction + 1, 3.5)
             else:
-                trend_direction = max(trend_direction - 1, -3)
+                trend_direction = max(trend_direction - 1, -3.5)
     else:
         moving_7_day_sum += (1 + trend_direction * 0.1) * real_data[i - sample_from_n_days_ago]
 
