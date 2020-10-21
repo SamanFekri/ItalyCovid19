@@ -77,7 +77,7 @@ moving_7_day_sum = 0
 trend_direction = 0
 for i in range(total):
     n = new_case_at_day(i, len(data['nuovi_positivi']), until_now, peak)
-    sample_from_n_days_ago = 5
+    sample_from_n_days_ago = 7
 
     if i < len(data['nuovi_positivi']):
         moving_7_day_sum += real_data[i]
