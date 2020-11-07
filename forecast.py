@@ -103,7 +103,6 @@ for i in range(total):
             n = (1 + trend_direction * 0.1) * moving_7_day_sum / 7
     n = int(round(n))
 
-    print(trend_limit['now'])
     if real_data[i - 1] > 0 and n / real_data[i - 1] > 1.0 + trend_limit['error']:
         trend_limit['now'] = max(trend_limit['now'] - 0.1, trend_limit['min'])
     if n > 0 and real_data[i - 1] / n > 1.0 + trend_limit['error']:
