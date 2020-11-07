@@ -75,6 +75,7 @@ for i in range(predict_more_day):
 predicted_data = []
 moving_7_day_sum = 0
 trend_direction = 0
+trend_limit = {'min': 3.0, 'max': 4.5, 'now': 3.0, 'error': 0.01}
 for i in range(total):
     n = new_case_at_day(i, len(data['nuovi_positivi']), until_now, peak)
     sample_from_n_days_ago = 7
@@ -83,9 +84,9 @@ for i in range(total):
         moving_7_day_sum += real_data[i]
         if i > 0:
             if real_data[i] > real_data[i - 1]:
-                trend_direction = min(trend_direction + 1, 3.8)
+                trend_direction = min(trend_direction + 1, trend_limit['now'])
             else:
-                trend_direction = max(trend_direction - 1, -3.8)
+                trend_direction = max(trend_direction - 1, -trend_limit['now'])
     else:
         moving_7_day_sum += (1 + trend_direction * 0.1) * real_data[i - sample_from_n_days_ago]
 
@@ -101,6 +102,12 @@ for i in range(total):
         else:
             n = (1 + trend_direction * 0.1) * moving_7_day_sum / 7
     n = int(round(n))
+
+    print(trend_limit['now'])
+    if real_data[i - 1] > 0 and n / real_data[i - 1] > 1.0 + trend_limit['error']:
+        trend_limit['now'] = max(trend_limit['now'] - 0.1, trend_limit['min'])
+    if n > 0 and real_data[i - 1] / n > 1.0 + trend_limit['error']:
+        trend_limit['now'] = min(trend_limit['now'] + 0.1, trend_limit['max'])
 
     predicted_data.append(n)
 
