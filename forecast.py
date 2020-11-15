@@ -98,7 +98,7 @@ for i in range(total):
         n = (5 * n + 2 * moving_7_day_sum / 7) / 7
     else:
         if i > 7:
-            n = (1 + trend_direction * 0.1) * (8 *(moving_7_day_sum / 7) + 2 * real_data[i - sample_from_n_days_ago]) / 10.0
+            n = (1 + trend_direction * 0.1) * (1 *(moving_7_day_sum / 7) + 9 * real_data[i - sample_from_n_days_ago]) / 10.0
         else:
             n = (1 + trend_direction * 0.1) * moving_7_day_sum / 7
     n = int(round(n))
