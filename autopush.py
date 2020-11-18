@@ -54,16 +54,16 @@ try:
     while True:
         x = datetime.today().utcnow()
         print(x)
-        if x.today().utcnow().hour < 16 or (x.today().utcnow().hour == 16 and x.today().utcnow().minute < 45):
-            y = x.replace(day=x.day, hour=16, minute=45, second=0, microsecond=0)
+        if x.today().utcnow().hour < 17 or (x.today().utcnow().hour == 17 and x.today().utcnow().minute < 45):
+            y = x.replace(day=x.day, hour=17, minute=45, second=0, microsecond=0)
         else:
             try:
-                y = x.replace(day=x.day + 1, hour=16, minute=45, second=0, microsecond=0)
+                y = x.replace(day=x.day + 1, hour=17, minute=45, second=0, microsecond=0)
             except ValueError:
                 try:
-                    y = x.replace(day=1, month=x.month + 1, hour=16, minute=45, second=0, microsecond=0)
+                    y = x.replace(day=1, month=x.month + 1, hour=17, minute=45, second=0, microsecond=0)
                 except ValueError:
-                    y = x.replace(day=1, month=1, year=x.year + 1, hour=16, minute=45, second=0, microsecond=0)
+                    y = x.replace(day=1, month=1, year=x.year + 1, hour=17, minute=45, second=0, microsecond=0)
 
         delta_t = y - x
 
