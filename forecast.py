@@ -84,6 +84,11 @@ for i in range(total):
         moving_7_day_sum += real_data[i]
         if i > 0:
             if real_data[i] > real_data[i - sample_from_n_days_ago]:
+                trend_direction = min(trend_direction + 0.5, trend_limit['now'])
+            else:
+                trend_direction = max(trend_direction - 0.5, -trend_limit['now'])
+
+            if real_data[i] > real_data[i - sample_from_n_days_ago]:
                 trend_direction = min(trend_direction + 1, trend_limit['now'])
             else:
                 trend_direction = max(trend_direction - 1, -trend_limit['now'])
@@ -94,13 +99,13 @@ for i in range(total):
         moving_7_day_sum -= real_data[i - 7]
 
     se = (moving_7_day_sum / 7) / (n + 0.1)
-    if se < 2:
-        n = (5 * n + 2 * moving_7_day_sum / 7) / 7
+    # if se < 2:
+    #     n = (5 * n + 2 * moving_7_day_sum / 7) / 7
+    # else:
+    if i > 7:
+        n = (1 + trend_direction * 0.1) * (1 *(moving_7_day_sum / 7) + 9 * real_data[i - sample_from_n_days_ago]) / 10.0
     else:
-        if i > 7:
-            n = (1 + trend_direction * 0.1) * (1 *(moving_7_day_sum / 7) + 9 * real_data[i - sample_from_n_days_ago]) / 10.0
-        else:
-            n = (1 + trend_direction * 0.1) * moving_7_day_sum / 7
+        n = (1 + trend_direction * 0.1) * moving_7_day_sum / 7
     n = int(round(n))
 
     if real_data[i - 1] > 0 and n / real_data[i - 1] > 1.0 + trend_limit['error']:
@@ -145,4 +150,4 @@ plt.setp(labels, rotation=90, fontsize=8)
 # plt.setp(labels, fontsize=8)
 
 plt.savefig('forecast.png', bbox_inches='tight')
-# plt.show()
+plt.show()
