@@ -2,8 +2,8 @@
 
 ## Prediction
 
-In this case I fit a semi-normal distribution to new cases.\
-I assume that peak day is {{peak_day}}.
+Now we use reinforcement learning to predict few days.\
+we pick our sample from 7 days ago
 
 <p align="center">
     <img src="forecast.png" width="800">

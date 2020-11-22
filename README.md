@@ -2,8 +2,8 @@
 
 ## Prediction
 
-In this case I fit a semi-normal distribution to new cases.\
-I assume that peak day is 2020-03-30.
+Now we use reinforcement learning to predict few days.\
+we pick our sample from 7 days ago
 
 <p align="center">
     <img src="forecast.png" width="800">
@@ -12,11 +12,11 @@ I assume that peak day is 2020-03-30.
 ### predicted 5 days
 date        | new case
 ------------|----------
-2020-11-23	| 19737
-2020-11-24	| 22734
-2020-11-25	| 23969
-2020-11-26	| 25073
-2020-11-27	| 25644
+2020-11-23	| 24804
+2020-11-24	| 28633
+2020-11-25	| 30260
+2020-11-26	| 31727
+2020-11-27	| 32528
 
 
 ### Total
