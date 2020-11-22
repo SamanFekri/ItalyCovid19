@@ -83,7 +83,7 @@ for i in range(total):
     if i < len(data['nuovi_positivi']):
         moving_7_day_sum += real_data[i]
         if i > 0:
-            if real_data[i] > real_data[i - 1]:
+            if real_data[i] > real_data[i - sample_from_n_days_ago]:
                 trend_direction = min(trend_direction + 1, trend_limit['now'])
             else:
                 trend_direction = max(trend_direction - 1, -trend_limit['now'])
