@@ -91,7 +91,7 @@ for i in range(total):
             if real_data[i] > real_data[i - sample_from_n_days_ago]:
                 trend_direction = min(trend_direction + 0.8, trend_limit['now'])
             else:
-                trend_direction = max(trend_direction - 0.8, -trend_limit['now'])
+                trend_direction = max(trend_direction - 0.4, -trend_limit['now'])
     else:
         moving_7_day_sum += (1 + trend_direction * 0.1) * real_data[i - sample_from_n_days_ago]
 
@@ -150,4 +150,4 @@ plt.setp(labels, rotation=90, fontsize=8)
 # plt.setp(labels, fontsize=8)
 
 plt.savefig('forecast.png', bbox_inches='tight')
-# plt.show()
+plt.show()
