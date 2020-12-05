@@ -150,4 +150,4 @@ plt.setp(labels, rotation=90, fontsize=8)
 # plt.setp(labels, fontsize=8)
 
 plt.savefig('forecast.png', bbox_inches='tight')
-plt.show()
+# plt.show()
