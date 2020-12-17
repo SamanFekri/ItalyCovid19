@@ -12,16 +12,16 @@ we pick our sample from 7 days ago
 ### predicted 5 days
 date        | new case
 ------------|----------
-2020-12-17	| 17321
-2020-12-18	| 18571
-2020-12-19	| 19428
-2020-12-20	| 18041
-2020-12-21	| 13833
+2020-12-18	| 20332
+2020-12-19	| 21350
+2020-12-20	| 19917
+2020-12-21	| 15390
+2020-12-22	| 17654
 
 
 ### Total
-Cases Until now = 1888392\
-Total expected cases = 2832588
+Cases Until now = 1906628\
+Total expected cases = 2859942
 
 ## Growth in each region
 With this code you can draw new cases of covid-19 in Italy based on regions
