@@ -38,6 +38,22 @@ URL = "https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-c
 r = requests.get(url=URL)
 res = r.json()
 
+# remove duplicate data
+dateToRegion = {}
+temp = []
+for i in range(len(res)):
+    if res[i]['data'] in dateToRegion:
+        if res[i]['denominazione_regione'] in dateToRegion[res[i]['data']]:
+            print(res[i]['denominazione_regione'])
+            continue
+        else:
+            dateToRegion[res[i]['data']].append(res[i]['denominazione_regione'])
+
+    else:
+        dateToRegion[res[i]['data']] = [res[i]['denominazione_regione']]
+    temp.append(res[i])
+res = temp
+
 # write data in python
 with open('raw_data.json', 'w', encoding='utf-8') as f:
     json.dump(res, f, ensure_ascii=False, indent=4)
@@ -73,13 +89,13 @@ for i in range(1, 23):
                      label=region['denominazione_regione'].iloc[0] + '\n&\n' + region['denominazione_regione'].iloc[1])
         lines.append(l)
         continue
-    l, = ax.plot(date, region['nuovi_positivi'], label=region['denominazione_regione'].iloc[0])
+    l, = ax.plot(date, region['nuovi_positivi'][:len(date)], label=region['denominazione_regione'].iloc[0])
     lines.append(l)
 
 leg = ax.legend(loc="center left", bbox_to_anchor=(1, 0.5))
 
 for legline, origline in zip(leg.get_lines(), lines):
-    legline.set_picker(10)  # 5 pts tolerance
+    legline.set_pickradius(10)  # 5 pts tolerance
     lined[legline] = origline
 
 fig.canvas.mpl_connect('pick_event', onpick)

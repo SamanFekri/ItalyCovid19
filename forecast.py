@@ -13,6 +13,23 @@ URL = "https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-c
 # sending get request and saving the response as response object
 r = requests.get(url=URL)
 res = r.json()
+# remove duplicate data
+dateToRegion = {}
+temp = []
+for i in range(len(res)):
+    if res[i]['data'] in dateToRegion:
+        if res[i]['denominazione_regione'] in dateToRegion[res[i]['data']]:
+            print(res[i]['denominazione_regione'])
+            continue
+        else:
+            dateToRegion[res[i]['data']].append(res[i]['denominazione_regione'])
+
+    else:
+        dateToRegion[res[i]['data']] = [res[i]['denominazione_regione']]
+    temp.append(res[i])
+res = temp
+
+
 
 # write data in python
 with open('raw_data.json', 'w', encoding='utf-8') as f:
