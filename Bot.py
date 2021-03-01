@@ -20,7 +20,6 @@ print("Config loaded")
 print(config)
 config['bot']['url'] = config['bot']['url'].format(token=config['bot']['token'])
 
-
 def core():
     # api-endpoint
     URL = config['src']
@@ -28,7 +27,8 @@ def core():
     # sending get request and saving the response as response object
     r = requests.get(url=URL)
     res = r.json()
-    print(res)
+
+    # print(res)
 
     lombardi = {
         'total': {'positive': 0, 'death': 0, 'healed': 0, 'cur': 0, 'hospitalization': 0, 'severe': 0},
@@ -39,11 +39,15 @@ def core():
         'today': {'positive': 0, 'death': 0, 'healed': 0, 'cur': 0, 'hospitalization': 0, 'severe': 0},
     }
 
+    duplicate_detector = {'Today': {}, 'Yesterday': {}}
+
     for item in res:
         isToday = datetime.strptime(item['data'], '%Y-%m-%dT%H:%M:%S').date() == (
                 datetime.today() - timedelta(days=0)).date()
         isYesterday = datetime.strptime(item['data'], '%Y-%m-%dT%H:%M:%S').date() == (
                 datetime.today() - timedelta(days=1)).date()
+        # print(datetime.strptime(item['data'], '%Y-%m-%dT%H:%M:%S').date(), (datetime.today() - timedelta(days=1)).date())
+
         if item['codice_regione'] == 3:
             if isToday:
                 lombardi['today']['positive'] = item['nuovi_positivi']
@@ -55,23 +59,31 @@ def core():
             lombardi['total']['death'] = item['deceduti']
 
         if isToday:
-            italy['today']['positive'] += item['nuovi_positivi']
+            if(item['denominazione_regione'] in duplicate_detector['Today']):
+                continue
+            duplicate_detector['Today'][item['denominazione_regione']] = 1
 
+            italy['today']['positive'] += item['nuovi_positivi']
             italy['total']['healed'] += item['dimessi_guariti']
             italy['total']['death'] += item['deceduti']
             italy['total']['hospitalization'] += item['ricoverati_con_sintomi']
             italy['total']['severe'] += item['terapia_intensiva']
 
+            print(item)
+
+
 
         if isYesterday:
+            if (item['denominazione_regione'] in duplicate_detector['Yesterday']):
+                continue
+            duplicate_detector['Yesterday'][item['denominazione_regione']] = 1
+
             italy['today']['healed'] += item['dimessi_guariti']
             italy['today']['death'] += item['deceduti']
             italy['today']['hospitalization'] += item['ricoverati_con_sintomi']
             italy['today']['severe'] += item['terapia_intensiva']
 
         italy['total']['positive'] += item['nuovi_positivi']
-
-        print(item)
 
     italy['today']['healed'] = italy['total']['healed'] - italy['today']['healed']
     italy['today']['death'] = italy['total']['death'] - italy['today']['death']
@@ -83,6 +95,19 @@ def core():
 
     lombardi['total']['cur'] = lombardi['total']['positive'] - lombardi['total']['death'] - lombardi['total']['healed']
     lombardi['today']['cur'] = lombardi['today']['positive'] - lombardi['today']['death'] - lombardi['today']['healed']
+
+    #### VACCINE PART
+    VACCINE_URL = config['vac_src']
+    # sending get request and saving the response as response object
+    r = requests.get(url=VACCINE_URL)
+    res = r.json()
+
+    vaccinated_numbers = 0
+    if res and res['data']:
+        for d in res['data']:
+            vaccinated_numbers += d['totale']
+
+
     print("-------------- italy")
     print(italy)
     print("-------------- lombardia")
@@ -116,7 +141,8 @@ Powered by [Skings](tg://user?id=82768138)
         current=lombardi['total']['cur'], today_current=lombardi['today']['cur'],
         death=lombardi['total']['death'], today_death=lombardi['today']['death'],
         healed=lombardi['total']['healed'], today_healed=lombardi['today']['healed'],
-        positive=lombardi['total']['positive'], today_positive=lombardi['today']['positive']
+        positive=lombardi['total']['positive'], today_positive=lombardi['today']['positive'],
+        vaccinated_numbers=vaccinated_numbers
     )
     print("--------------")
     print(text)
@@ -133,13 +159,15 @@ Powered by [Skings](tg://user?id=82768138)
 📈 آمار کووید۱۹ مربوط به امروز
 🗓   {date}
 
-• مبتلایان امروز: {today_positive}
-• فوت شدگان امروز: {today_death}
-• بهبود یافتگان امروز: {today_healed}
+• مبتلایان امروز: {today_positive:,}
+• فوت شدگان امروز: {today_death:,}
+• بهبود یافتگان امروز: {today_healed:,}
 
-•مجموع بستری: ({today_hospitalized:+}) {hospitalized}
+•مجموع بستری: ({today_hospitalized:+,}) {hospitalized:,}
 
-•مجموع بستری در مراقبتهای ویژه: ({today_severe:+}) {severe}
+•مجموع بستری در مراقبتهای ویژه: ({today_severe:+,}) {severe:,}
+
+💉🌸 تعداد دوزهای واکسیناسیون تا به امروز: {vaccinated_numbers:,}
 
 🇮🇹@coronaitaliafarsi
 
@@ -157,6 +185,7 @@ This Bot Powered by [Skings](tg://user?id=82768138) (@SamanFekri)
         positive=italy['total']['positive'], today_positive=italy['today']['positive'],
         hospitalized= italy['total']['hospitalization'], today_hospitalized=italy['today']['hospitalization'],
         severe= italy['total']['severe'], today_severe=italy['today']['severe'],
+        vaccinated_numbers=vaccinated_numbers
     )
     print("--------------")
     print(text)
