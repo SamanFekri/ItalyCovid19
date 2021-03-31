@@ -205,16 +205,17 @@ try:
     while True:
         x = datetime.today().utcnow()
         print(x)
-        if x.today().utcnow().hour < 17 or (x.today().utcnow().hour == 17 and x.today().utcnow().minute < 30):
-            y = x.replace(day=x.day, hour=17, minute=30, second=0, microsecond=0)
+        publish = {"h": 16, "m": 30}
+        if x.today().utcnow().hour < publish['h'] or (x.today().utcnow().hour == publish['h'] and x.today().utcnow().minute < publish['m']):
+            y = x.replace(day=x.day, hour=publish['h'], minute=publish['m'], second=0, microsecond=0)
         else:
             try:
-                y = x.replace(day=x.day + 1, hour=17, minute=30, second=0, microsecond=0)
+                y = x.replace(day=x.day + 1, hour=publish['h'], minute=publish['m'], second=0, microsecond=0)
             except ValueError:
                 try:
-                    y = x.replace(day=1, month=x.month + 1, hour=17, minute=30, second=0, microsecond=0)
+                    y = x.replace(day=1, month=x.month + 1, hour=publish['h'], minute=publish['m'], second=0, microsecond=0)
                 except ValueError:
-                    y = x.replace(day=1, month=1, year=x.year + 1, hour=17, minute=30, second=0, microsecond=0)
+                    y = x.replace(day=1, month=1, year=x.year + 1, hour=publish['h'], minute=publish['m'], second=0, microsecond=0)
 
         delta_t = y - x
 
