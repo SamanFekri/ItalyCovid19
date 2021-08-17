@@ -12,16 +12,16 @@ we pick our sample from 7 days ago
 ### predicted 5 days
 date        | new case
 ------------|----------
-2021-08-17	| 6933
-2021-08-18	| 8097
-2021-08-19	| 8413
-2021-08-20	| 8595
-2021-08-21	| 8478
+2021-08-18	| 7742
+2021-08-19	| 8032
+2021-08-20	| 8194
+2021-08-21	| 8067
+2021-08-22	| 6889
 
 
 ### Total
-Cases Until now = 4438875\
-Total expected cases = 6658312
+Cases Until now = 4444148\
+Total expected cases = 6666222
 
 ## Growth in each region
 With this code you can draw new cases of covid-19 in Italy based on regions
