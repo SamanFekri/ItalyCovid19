@@ -20,6 +20,7 @@ print("Config loaded")
 print(config)
 config['bot']['url'] = config['bot']['url'].format(token=config['bot']['token'])
 
+
 def core():
     # api-endpoint
     URL = config['src']
@@ -35,8 +36,9 @@ def core():
         'today': {'positive': 0, 'death': 0, 'healed': 0, 'cur': 0, 'hospitalization': 0, 'severe': 0},
     }
     italy = {
-        'total': {'positive': 0, 'death': 0, 'healed': 0, 'cur': 0, 'hospitalization': 0, 'severe': 0},
-        'today': {'positive': 0, 'death': 0, 'healed': 0, 'cur': 0, 'hospitalization': 0, 'severe': 0},
+        'total': {'positive': 0, 'death': 0, 'healed': 0, 'cur': 0, 'hospitalization': 0, 'severe': 0, 'test': 0},
+        'today': {'positive': 0, 'death': 0, 'healed': 0, 'cur': 0, 'hospitalization': 0, 'severe': 0, 'test': 0},
+        'yesterday': {'positive': 0, 'test': 0}
     }
 
     duplicate_detector = {'Today': {}, 'Yesterday': {}}
@@ -46,6 +48,8 @@ def core():
                 datetime.today() - timedelta(days=0)).date()
         isYesterday = datetime.strptime(item['data'], '%Y-%m-%dT%H:%M:%S').date() == (
                 datetime.today() - timedelta(days=1)).date()
+        is2DaysAgo = datetime.strptime(item['data'], '%Y-%m-%dT%H:%M:%S').date() == (
+                datetime.today() - timedelta(days=2)).date()
         # print(datetime.strptime(item['data'], '%Y-%m-%dT%H:%M:%S').date(), (datetime.today() - timedelta(days=1)).date())
 
         if item['codice_regione'] == 3:
@@ -59,7 +63,7 @@ def core():
             lombardi['total']['death'] = item['deceduti']
 
         if isToday:
-            if(item['denominazione_regione'] in duplicate_detector['Today']):
+            if (item['denominazione_regione'] in duplicate_detector['Today']):
                 continue
             duplicate_detector['Today'][item['denominazione_regione']] = 1
 
@@ -68,10 +72,9 @@ def core():
             italy['total']['death'] += item['deceduti']
             italy['total']['hospitalization'] += item['ricoverati_con_sintomi']
             italy['total']['severe'] += item['terapia_intensiva']
+            italy['total']['test'] += item['tamponi_test_molecolare'] + item['tamponi_test_antigenico_rapido']
 
             print(item)
-
-
 
         if isYesterday:
             if (item['denominazione_regione'] in duplicate_detector['Yesterday']):
@@ -82,13 +85,28 @@ def core():
             italy['today']['death'] += item['deceduti']
             italy['today']['hospitalization'] += item['ricoverati_con_sintomi']
             italy['today']['severe'] += item['terapia_intensiva']
+            italy['today']['test'] += item['tamponi_test_molecolare'] + item['tamponi_test_antigenico_rapido']
+            italy['yesterday']['positive'] += item['nuovi_positivi']
+
+        if is2DaysAgo:
+            italy['yesterday']['test'] += item['tamponi_test_molecolare'] + item['tamponi_test_antigenico_rapido']
 
         italy['total']['positive'] += item['nuovi_positivi']
+
+    if italy['today']['positive'] == 0:
+        time.sleep(60 * 5)
+        core()
+        return
 
     italy['today']['healed'] = italy['total']['healed'] - italy['today']['healed']
     italy['today']['death'] = italy['total']['death'] - italy['today']['death']
     italy['today']['hospitalization'] = italy['total']['hospitalization'] - italy['today']['hospitalization']
     italy['today']['severe'] = italy['total']['severe'] - italy['today']['severe']
+    print('-----------------------------------------------------------------')
+    print(italy['today']['test'], italy['total']['test'])
+    italy['yesterday']['test'] = italy['today']['test'] - italy['yesterday']['test']
+    italy['today']['test'] = italy['total']['test'] - italy['today']['test']
+    print(italy['today']['test'], italy['total']['test'])
 
     italy['total']['cur'] = italy['total']['positive'] - italy['total']['death'] - italy['total']['healed']
     italy['today']['cur'] = italy['today']['positive'] - italy['today']['death'] - italy['today']['healed']
@@ -106,7 +124,6 @@ def core():
     if res and res['data']:
         for d in res['data']:
             vaccinated_numbers += d['totale']
-
 
     print("-------------- italy")
     print(italy)
@@ -163,9 +180,11 @@ Powered by [Skings](tg://user?id=82768138)
 • فوت شدگان امروز: {today_death:,}
 • بهبود یافتگان امروز: {today_healed:,}
 
-•مجموع بستری: ({today_hospitalized:+,}) {hospitalized:,}
+{today_severe:+,} مراقبهای ویژه | {today_hospitalized:+,} بستری
 
-•مجموع بستری در مراقبتهای ویژه: ({today_severe:+,}) {severe:,}
+
+تعداد تست‌ها {today_test:,}
+ضریب جواب مثبت در میان تست‌ها: %{positive_ratio:,.2f} (%{positive_ratio_change:+,.2f})
 
 💉🌸 تعداد دوزهای واکسیناسیون تا به امروز: {vaccinated_numbers:,}
 
@@ -183,8 +202,11 @@ This Bot Powered by [Skings](tg://user?id=82768138) (@SamanFekri)
         death=italy['total']['death'], today_death=italy['today']['death'],
         healed=italy['total']['healed'], today_healed=italy['today']['healed'],
         positive=italy['total']['positive'], today_positive=italy['today']['positive'],
-        hospitalized= italy['total']['hospitalization'], today_hospitalized=italy['today']['hospitalization'],
-        severe= italy['total']['severe'], today_severe=italy['today']['severe'],
+        hospitalized=italy['total']['hospitalization'], today_hospitalized=italy['today']['hospitalization'],
+        severe=italy['total']['severe'], today_severe=italy['today']['severe'],
+        today_test=int(italy['today']['test']),
+        positive_ratio=(italy['today']['positive'] / italy['today']['test']) * 100,
+        positive_ratio_change=(italy['today']['positive'] / italy['today']['test'] - (italy['yesterday']['positive'] / italy['yesterday']['test'])) * 100,
         vaccinated_numbers=vaccinated_numbers
     )
     print("--------------")
@@ -206,16 +228,19 @@ try:
         x = datetime.today().utcnow()
         print(x)
         publish = {"h": 16, "m": 30}
-        if x.today().utcnow().hour < publish['h'] or (x.today().utcnow().hour == publish['h'] and x.today().utcnow().minute < publish['m']):
+        if x.today().utcnow().hour < publish['h'] or (
+                x.today().utcnow().hour == publish['h'] and x.today().utcnow().minute < publish['m']):
             y = x.replace(day=x.day, hour=publish['h'], minute=publish['m'], second=0, microsecond=0)
         else:
             try:
                 y = x.replace(day=x.day + 1, hour=publish['h'], minute=publish['m'], second=0, microsecond=0)
             except ValueError:
                 try:
-                    y = x.replace(day=1, month=x.month + 1, hour=publish['h'], minute=publish['m'], second=0, microsecond=0)
+                    y = x.replace(day=1, month=x.month + 1, hour=publish['h'], minute=publish['m'], second=0,
+                                  microsecond=0)
                 except ValueError:
-                    y = x.replace(day=1, month=1, year=x.year + 1, hour=publish['h'], minute=publish['m'], second=0, microsecond=0)
+                    y = x.replace(day=1, month=1, year=x.year + 1, hour=publish['h'], minute=publish['m'], second=0,
+                                  microsecond=0)
 
         delta_t = y - x
 
