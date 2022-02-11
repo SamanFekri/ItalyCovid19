@@ -12,16 +12,16 @@ we pick our sample from 7 days ago
 ### predicted 5 days
 date        | new case
 ------------|----------
-2022-02-11	| 72252
-2022-02-12	| 68103
-2022-02-13	| 59806
-2022-02-14	| 39043
-2022-02-15	| 71167
+2022-02-12	| 67771
+2022-02-13	| 59475
+2022-02-14	| 38712
+2022-02-15	| 70835
+2022-02-16	| 59108
 
 
 ### Total
-Cases Until now = 11786599\
-Total expected cases = 17679898
+Cases Until now = 11853751\
+Total expected cases = 17780626
 
 ## Growth in each region
 With this code you can draw new cases of covid-19 in Italy based on regions
